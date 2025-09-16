@@ -1,132 +1,122 @@
-```txt
-Open Finance API - Documentação
-API em Node.js + Express + MongoDB que simula um sistema financeiro simples, com clientes, contas e transações.
+## Open Finance API
 
-PRÉ-REQUISITOS
-Node.js >= 18
+Uma API RESTful em **Node.js**, **Express** e **MongoDB** que simula um sistema financeiro simples.
+### Tecnologias
 
-Docker
+- Node.js >= 18
+- Express.js
+- MongoDB (Docker)
+- Docker & Docker Compose
 
-Docker Compose
+---
 
-CLONAR O REPOSITÓRIO
+### Como começar
+
+**Clone o repositório:**
+```bash
 git clone https://github.com/Richard-Strn/open-finance.git
 cd open-finance
+```
 
-CONFIGURAÇÃO DO AMBIENTE
-Criar o arquivo .env baseado no example.env com as informações do ambiente:
-
+**Configure o ambiente:**
+```bash
 cp example.env .env
-PORT: porta em que a API será exposta
+```
+- `PORT`: porta da API
+- `MONGO_URI`: string de conexão com MongoDB (use o container Docker)
 
-MONGO_URI: string de conexão com MongoDB (container Docker)
+**Suba a API com Docker:**
+```bash
+docker-compose up --build
+```
 
-RODANDO A API COM DOCKER
-No terminal do projeto: docker-compose up --build
+---
 
-ESTRUTURA DE DADOS
-Customer (Cliente):
+### Exemplos de Estrutura de Dados
+
+<details>
+<summary>Cliente</summary>
+
+```json
 {
- "_id": "cus_001",
- "name": "Maria Silva",
- "cpf": "12345678900",
- "email": "maria@email.com",
- "accounts": []
+  "_id": "cus_001",
+  "name": "Maria Silva",
+  "cpf": "12345678900",
+  "email": "maria@email.com",
+  "accounts": []
 }
-Account (Conta):
+```
+</details>
+
+<details>
+<summary>Conta</summary>
+
+```json
 {
- "_id": "acc_001",
- "type": "checking",
- "branch": "0001",
- "number": "12345-6",
- "balance": 2500.75,
- "transactions": []
+  "_id": "acc_001",
+  "type": "checking",
+  "branch": "0001",
+  "number": "12345-6",
+  "balance": 2500.75,
+  "transactions": []
 }
-Transaction (Transação):
+```
+</details>
+
+<details>
+<summary>Transação</summary>
+
+```json
 {
- "_id": "txn_001",
- "date": "2025-09-16",
- "description": "Depósito via TED",
- "amount": 500,
- "type": "credit",
- "category": "Income"
+  "_id": "txn_001",
+  "date": "2025-09-16",
+  "description": "Depósito via TED",
+  "amount": 500,
+  "type": "credit",
+  "category": "Income"
 }
+```
+</details>
 
-ENDPOINTS DA API
-Criar cliente
-Método: POST
+---
 
-URL: http://localhost:{PORTA}/customers
+### Endpoints Principais
 
-Headers: Content-Type: application/json
-
-Body (raw / JSON):
-
+**Criar cliente**
+```http
+POST /customers
+Content-Type: application/json
+Body:
 {
   "name": "Marina Silva",
   "cpf": "12345678903",
   "email": "marina123@email.com"
 }
+```
 
-Resposta esperada:
-{
-  "name": "Marina Silva",
-  "cpf": "12345678903",
-  "email": "marina123@email.com",
-  "accounts": [],
-  "_id": "ID_DO_CLIENTE",
-  "__v": 0
-}
-
-Guarde o _id retornado, vamos usar no próximo passo.
-
-Criar conta para o cliente
-Método: POST
-
-URL: http://localhost:{PORTA}/customers/{ID_DO_CLIENTE}/accounts
-
-Headers: Content-Type: application/json
-
-Body (raw / JSON):
-
+**Criar conta para o cliente**
+```http
+POST /customers/{ID_DO_CLIENTE}/accounts
+Content-Type: application/json
+Body:
 {
   "type": "checking",
   "branch": "0001",
   "number": "12345-6",
   "balance": 1000
 }
+```
 
-Resposta esperada:
-{
-  "_id": "ID_DA_CONTA",
-  "type": "checking",
-  "branch": "0001",
-  "number": "12345-6",
-  "balance": 1000,
-  "transactions": []
-}
+**Consultar saldo**
+```http
+GET /accounts/{ID_DA_CONTA}/balance
+```
 
-Guarde o _id da conta para consultas de saldo e transações.
-
-Consultar saldo da conta
-Método: GET
-
-URL: http://localhost:{PORTA}/accounts/{ID_DA_CONTA}/balance
-
-Resposta esperada:
-{
-  "balance": 1000
-}
-
-Registrar transação (crédito ou débito)
-Método: POST
-
-URL: http://localhost:{PORTA}/accounts/{ID_DA_CONTA}/transactions
-
-Headers: Content-Type: application/json
-
-Body (raw / JSON) — exemplo de crédito:
-
+**Registrar transação**
+```http
+POST /accounts/{ID_DA_CONTA}/transactions
+Content-Type: application/json
+Body:
 {
   "date": "2025-09-10",
   "description": "Depósito via transferência",
@@ -134,39 +124,17 @@ Body (raw / JSON) — exemplo de crédito:
   "type": "credit",
   "category": "Income"
 }
+```
 
-Resposta esperada:
-{
-  "_id": "ID_DA_TRANSACAO",
-  "date": "2025-09-10",
-  "description": "Depósito via transferência",
-  "amount": 500,
-  "type": "credit",
-  "category": "Income"
-}
+**Listar transações**
+```http
+GET /accounts/{ID_DA_CONTA}/transactions
+```
 
-Para débito, basta trocar "type": "debit" e o valor será subtraído do saldo da conta.
+---
 
-Listar transações (extrato)
-Método: GET
+### Observações
 
-URL: http://localhost:{PORTA}/accounts/{ID_DA_CONTA}/transactions
-
-Resposta esperada:
-[
-  {
-    "_id": "ID_DA_TRANSACAO",
-    "date": "2025-09-10",
-    "description": "Depósito via transferência",
-    "amount": 500,
-    "type": "credit",
-    "category": "Income"
-  }
-]
-
-OBSERVAÇÕES
-Todas as respostas estão em JSON
-
-Datas seguem o padrão ISO 8601 (YYYY-MM-DD)
-
-Não há autenticação implementada
+- Todas as respostas estão em JSON
+- Datas no padrão ISO 8601 (`YYYY-MM-DD`)
+- Não há autenticação implementada (aplicação de demonstração)
