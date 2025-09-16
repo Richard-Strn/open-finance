@@ -1,41 +1,31 @@
 ```txt
-# Open Finance API - Documentação
+Open Finance API - Documentação
 API em Node.js + Express + MongoDB que simula um sistema financeiro simples, com clientes, contas e transações.
 
----
-
-## PRÉ-REQUISITOS
+PRÉ-REQUISITOS
 Node.js >= 18
+
 Docker
+
 Docker Compose
 
----
-
-## CLONAR O REPOSITÓRIO
+CLONAR O REPOSITÓRIO
 git clone https://github.com/Richard-Strn/open-finance.git
 cd open-finance
 
----
-
-## CONFIGURAÇÃO DO AMBIENTE
+CONFIGURAÇÃO DO AMBIENTE
 Criar o arquivo .env baseado no example.env com as informações do ambiente:
 
 cp example.env .env
-
 PORT: porta em que a API será exposta
+
 MONGO_URI: string de conexão com MongoDB (container Docker)
 
----
+RODANDO A API COM DOCKER
+No terminal do projeto: docker-compose up --build
 
-## RODANDO A API COM DOCKER
-No terminal do projeto:
-docker-compose up --build
-
----
-
-## ESTRUTURA DE DADOS
-
-### Customer (Cliente)
+ESTRUTURA DE DADOS
+Customer (Cliente):
 {
  "_id": "cus_001",
  "name": "Maria Silva",
@@ -43,8 +33,7 @@ docker-compose up --build
  "email": "maria@email.com",
  "accounts": []
 }
-
-### Account (Conta)
+Account (Conta):
 {
  "_id": "acc_001",
  "type": "checking",
@@ -53,8 +42,7 @@ docker-compose up --build
  "balance": 2500.75,
  "transactions": []
 }
-
-### Transaction (Transação)
+Transaction (Transação):
 {
  "_id": "txn_001",
  "date": "2025-09-16",
@@ -64,15 +52,16 @@ docker-compose up --build
  "category": "Income"
 }
 
----
-
-## ENDPOINTS DA API
-
-### Criar cliente
+ENDPOINTS DA API
+Criar cliente
 Método: POST
+
 URL: http://localhost:{PORTA}/customers
+
 Headers: Content-Type: application/json
+
 Body (raw / JSON):
+
 {
   "name": "Marina Silva",
   "cpf": "12345678903",
@@ -89,15 +78,17 @@ Resposta esperada:
   "__v": 0
 }
 
-> Guarde o _id retornado, vamos usar no próximo passo.
+Guarde o _id retornado, vamos usar no próximo passo.
 
----
-
-### Criar conta para o cliente
+Criar conta para o cliente
 Método: POST
+
 URL: http://localhost:{PORTA}/customers/{ID_DO_CLIENTE}/accounts
+
 Headers: Content-Type: application/json
+
 Body (raw / JSON):
+
 {
   "type": "checking",
   "branch": "0001",
@@ -115,12 +106,11 @@ Resposta esperada:
   "transactions": []
 }
 
-> Guarde o _id da conta para consultas de saldo e transações.
+Guarde o _id da conta para consultas de saldo e transações.
 
----
-
-### Consultar saldo da conta
+Consultar saldo da conta
 Método: GET
+
 URL: http://localhost:{PORTA}/accounts/{ID_DA_CONTA}/balance
 
 Resposta esperada:
@@ -128,13 +118,15 @@ Resposta esperada:
   "balance": 1000
 }
 
----
-
-### Registrar transação (crédito ou débito)
+Registrar transação (crédito ou débito)
 Método: POST
+
 URL: http://localhost:{PORTA}/accounts/{ID_DA_CONTA}/transactions
+
 Headers: Content-Type: application/json
+
 Body (raw / JSON) — exemplo de crédito:
+
 {
   "date": "2025-09-10",
   "description": "Depósito via transferência",
@@ -153,12 +145,11 @@ Resposta esperada:
   "category": "Income"
 }
 
-> Para débito, basta trocar "type": "debit" e o valor será subtraído do saldo da conta.
+Para débito, basta trocar "type": "debit" e o valor será subtraído do saldo da conta.
 
----
-
-### Listar transações (extrato)
+Listar transações (extrato)
 Método: GET
+
 URL: http://localhost:{PORTA}/accounts/{ID_DA_CONTA}/transactions
 
 Resposta esperada:
@@ -173,9 +164,9 @@ Resposta esperada:
   }
 ]
 
----
+OBSERVAÇÕES
+Todas as respostas estão em JSON
 
-## OBSERVAÇÕES
-- Todas as respostas estão em JSON
-- Datas seguem o padrão ISO 8601 (YYYY-MM-DD)
-- Não há autenticação implementada
+Datas seguem o padrão ISO 8601 (YYYY-MM-DD)
+
+Não há autenticação implementada
