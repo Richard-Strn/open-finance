@@ -1,14 +1,16 @@
+version: "3.9"
+
 services:
   api:
     build: .
     container_name: openfinance-api
     restart: always
     ports:
-      - "3000:3000"
+      - "${PORT}:${PORT}" # usa a porta do .env
     depends_on:
       - mongo
     environment:
-      - MONGO_URL=mongodb://mongo:27017/openfinance
+      - MONGO_URI=${MONGO_URI} # pega do .env
     volumes:
       - .:/app
       - /app/node_modules
