@@ -15,7 +15,7 @@ router.get("/:id/balance", async (req, res) => {
   }
 });
 
-// Realizar transação (crédito/débito)
+// Realizar transação
 router.post("/:id/transactions", async (req, res) => {
   try {
     const account = await Account.findById(req.params.id);
@@ -39,7 +39,7 @@ router.post("/:id/transactions", async (req, res) => {
   }
 });
 
-// Listar transações (extrato)
+// Extrato)
 router.get("/:id/transactions", async (req, res) => {
   try {
     const account = await Account.findById(req.params.id).populate("transactions");

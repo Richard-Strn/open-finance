@@ -1,4 +1,4 @@
-require("dotenv").config(); // 🔹 deve estar no topo, antes de usar process.env
+require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -14,13 +14,13 @@ app.use("/customers", customerRoutes);
 app.use("/accounts", accountRoutes);
 
 // Variáveis de ambiente
-const PORT = process.env.PORT || 3000;
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/openfinance";
+const PORT = process.env.PORT;
+const MONGO_URI = process.env.MONGO_URI;
 
 // Conexão com MongoDB
 mongoose.connect(MONGO_URI)
   .then(() => {
-    console.log("✅ MongoDB conectado");
-    app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
+    console.log("MongoDB conectado");
+    app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
   })
-  .catch(err => console.error("❌ Erro ao conectar MongoDB:", err));
+  .catch(err => console.error("Erro ao conectar MongoDB:", err));

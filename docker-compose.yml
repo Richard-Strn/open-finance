@@ -6,7 +6,7 @@ services:
     container_name: openfinance-api
     restart: always
     ports:
-      - "${PORT}:${PORT}" # usa a porta do .env
+      - "${PORT}:${PORT}" # pega do .env
     depends_on:
       - mongo
     environment:
